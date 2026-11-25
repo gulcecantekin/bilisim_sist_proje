@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ana Panel | Züccaciye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="/css/stil.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div id="menu"></div>   <!-- ortak.js menüyü buraya çizer -->
+
+<main class="container py-4">
+    <div id="mesajlar"></div>
+    <h3 class="mb-4">Hoş geldiniz, <span id="adSoyad"></span></h3>
+
+    <!-- Sadece yöneticiye görünen özet kartları (/api/kds/ozet) -->
+    <div class="row g-3 mb-4 d-none" id="ozetKartlari">
+        <div class="col-md-3"><div class="card p-3"><small class="text-muted">Bugünkü ciro</small><h4 id="bugunCiro">-</h4><small id="bugunFis"></small></div></div>
+        <div class="col-md-3"><div class="card p-3"><small class="text-muted">Bu ayki ciro</small><h4 id="ayCiro">-</h4></div></div>
+        <div class="col-md-3"><div class="card p-3"><small class="text-muted">Bu ayki kâr</small><h4 id="ayKar">-</h4></div></div>
+        <div class="col-md-3"><div class="card p-3 border-danger"><small class="text-muted">Kritik stoktaki ürün</small><h4 id="kritikSayi" class="text-danger">-</h4></div></div>
+    </div>
+
+    <!-- Herkese görünen hızlı erişim -->
+    <div class="row g-3">
+        <div class="col-md-4"><a href="/satis.html" class="card p-4 text-decoration-none text-dark kisayol"><i class="bi bi-upc-scan fs-1"></i><h5 class="mt-2">Satış Yap</h5><small class="text-muted">Barkod okutarak satış</small></a></div>
+        <div class="col-md-4"><a href="/urunler.html" class="card p-4 text-decoration-none text-dark kisayol"><i class="bi bi-box-seam fs-1"></i><h5 class="mt-2">Ürünler</h5><small class="text-muted">Ürün listesi ve arama</small></a></div>
+        <div class="col-md-4"><a href="/stok.html" class="card p-4 text-decoration-none text-dark kisayol"><i class="bi bi-boxes fs-1"></i><h5 class="mt-2">Stok</h5><small class="text-muted">Mal kabul ve kritik stok</small></a></div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/ortak.js"></script>
+<script>
+    (async () => {
+        const ben = await sayfaHazirla();
+        document.getElementById("adSoyad").textContent = ben.ad_soyad;
+
+        if (ben.rol === "yonetici") {
+            try {
+                const o = await api("/api/kds/ozet");
+                document.getElementById("bugunCiro").textContent = tl(o.bugun_ciro);
+                document.getElementById("bugunFis").textContent = o.bugun_fis + " fiş";
+                document.getElementById("ayCiro").textContent = tl(o.bu_ay_ciro);
+                document.getElementById("ayKar").textContent = tl(o.bu_ay_kar);
+                document.getElementById("kritikSayi").textContent = o.kritik_stok_sayisi;
+                document.getElementById("ozetKartlari").classList.remove("d-none");
+            } catch (hata) {
+                mesajGoster(hata.message, "danger");
+            }
+        }
+    })();
+</script>
+</body>
+</html>

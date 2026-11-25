@@ -1,0 +1,8 @@
+/* Projeye özel stiller. Bootstrap çoğu şeyi hallettiği için kısa tutun. */
+
+body { min-height: 100vh; }
+.card { border-radius: 12px; border: 0; box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+.navbar-brand { font-weight: 600; }
+
+.kisayol { transition: transform .15s; }
+.kisayol:hover { transform: translateY(-3px); }
